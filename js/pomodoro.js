@@ -107,6 +107,7 @@ class ActionLog extends React.Component {
   }
 
   onTimerCompleted = (action) => {
+    end_of_activity.play();
     this.setState({
       key: this.state.key + 1,
       current_action: { type: Empty, key: this.state.key },
@@ -118,7 +119,6 @@ class ActionLog extends React.Component {
   }
 
   onNewAction = action => ev => {
-    end_of_activity.play();
     this.setState({
       key: this.state.key + 1,
       current_action: { type: action, key : this.state.key},
