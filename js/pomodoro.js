@@ -4,9 +4,11 @@ import React from "react";
 import styled from "styled-components";
 
 const Content = styled.div`
-  margin: 2em auto auto auto;
-  font-family: Roboto;
+  margin: auto;
+  font-family: Monospace;
+  font-size: 14px;
   color: #f8f8f8;
+  width: 30em;
 `;
 
 const TimerDisplay = styled.span`
@@ -69,20 +71,29 @@ const handler = () => {
 }
 
 const Log = styled.div`
+  border-top: 1em #f8f8f8 solid;
+  margin-top: 0.6em;
 `;
+
 const Action = styled.div`
   color: #f8f8f8;
-	background-color: #38252c;
-  padding: 0.5em;
-  margin: 0.5em;
+	background-color: inherit;
+  padding: 0.4em 0;
+  &:hover {
+    border-bottom: #ffa800 .06em solid;
+  }
+  &:before {
+    color: #ffa800;
+    content: "${props => props.actionNumber + "  "}";
+  }
 `;
-const Button = styled.button`
-  margin: 0.5em;
-  border: 0;
-	padding: 0.5em;
-	font-size: 1.2em;
-	background-color: #76b639;
-  padding: 0.5em;
+
+const Button = styled.a`
+	margin: 0.5em;
+  cursor: pointer;
+  &:hover {
+    border-bottom: #97d01a .06em solid;
+  }
 `;
 
 class ActionLog extends React.Component {
@@ -123,15 +134,17 @@ class ActionLog extends React.Component {
   render () {
     const onNewAction = this.onNewAction;
     return (
+      <div>
+        ➜
+        <Button onClick={onNewAction(Pomodoro)}>/{Pomodoro}</Button>
+        <Button onClick={onNewAction(LongBreak)}>/{LongBreak}</Button>
+        <Button onClick={onNewAction(ShortBreak)}>/{ShortBreak}</Button>
       <Log>
-        <Button onClick={onNewAction(Pomodoro)}> {Pomodoro} </Button>
-        <Button onClick={onNewAction(LongBreak)}> {LongBreak} </Button>
-        <Button onClick={onNewAction(ShortBreak)}> {ShortBreak} </Button>
         {(() => {
           const action_type = this.state.current_action.type;
           if (this.state.current_action.type != Empty)
             return (
-              <Action>
+              <Action actionNumber={1}>
                 {this.state.current_action.type} {" | "}
                 <Timer 
                   key={this.state.key}
@@ -143,10 +156,11 @@ class ActionLog extends React.Component {
           else
             return "";
         })()}
-        {this.state.log.map((el) => (
-          <Action> {el.type} </Action> 
+        {this.state.log.map((el, i) => (
+          <Action actionNumber={i + 2}> {el.type} </Action> 
         ))}
       </Log>
+      </div>
     );
   }
   
@@ -222,7 +236,7 @@ class Timer extends React.Component {
 }
 
 const Title = styled.div`
-  margin: 1em;
+  margin: 0.5em;
 `;
 
 const App = (props) => {
