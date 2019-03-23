@@ -20,7 +20,15 @@ const config = {
         to: path.resolve(
           __dirname,
           './dist/index.html'),
-      }
+      },
+      {
+        from: path.resolve(
+          __dirname,
+          './assets/end_of_activity.wav'),
+        to: path.resolve(
+          __dirname,
+          './dist/end_of_activity.wav'),
+      },
     ]),
   ],
   module: {

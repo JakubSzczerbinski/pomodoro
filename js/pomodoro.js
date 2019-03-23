@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import React from "react";
 import styled from "styled-components";
 
+import {div, mod} from "./helpers.js";
+
 const Content = styled.div`
   margin: auto;
   font-family: Monospace;
@@ -21,14 +23,6 @@ const fillDigits = (number, digits) => {
   }
   return text;
 }
-
-const mod = (lhs, rhs) => {
-  return lhs % rhs;
-};
-
-const div = (lhs, rhs) => {
-  return Math.floor(lhs / rhs);
-};
 
 const clockDisplayFromSeconds = (seconds) => {
   const secondsText = fillDigits(mod(seconds, 60), 2);
@@ -124,6 +118,7 @@ class ActionLog extends React.Component {
   }
 
   onNewAction = action => ev => {
+    end_of_activity.play();
     this.setState({
       key: this.state.key + 1,
       current_action: { type: action, key : this.state.key},
@@ -171,6 +166,7 @@ const TimerUpdated = "TimerUpdated";
 const TimerStopped = "TimerStopped";
 const TimerStarted = "TimerStarted";
 
+const end_of_activity = new Audio('end_of_activity.wav');
 class Timer extends React.Component {
   constructor(props) {
     super(props)
