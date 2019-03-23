@@ -1,7 +1,8 @@
 #!/bin/bash
 
 docker run -t \
-  -v /home/szczerbi/Dokumenty/code/pomodoro/:/app \
+  --volumes-from=jenkins \
+  -v $(pwd):/app \
   node:10 \
   /bin/bash -c "cd /app && yarn install && yarn build" \
 
