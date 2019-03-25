@@ -21,89 +21,53 @@ const clockDisplayFromSeconds = (seconds) => {
   return minutesText + ":" + secondsText;
 }
 
-class Timer extends React.Component {
-  static Completed = () => "TimerCompleted";
-  static Updated = () => "TimerUpdated";
-  static Stopped = () => "TimerStopped";
-  static Started = () => "TimerStarted";
+const Completed = "TimerCompleted";
+const Updated = "TimerUpdated";
+const Stopped = "TimerStopped";
+const Started = "TimerStarted";
 
-  constructor(props) {
-    super(props)
-    this.state = { timer: 0, running: false };
-    this.handler = this.props.handler;
-  }
+const useTimer = (begin, end) => {
+  const [time, setTime] = React.useState(begin);
+  const [isRunning, setIsRunning] = React.useState(true);
 
-  onPauseResume = (ev) => {
-    if (this.state.running)
-      this.stop();
-    else
-      this.start();
-  }
-
-  emitEvent = (type) => {
-    this.handler({
-      type,
-      ...this.state,
-    });
-  }
-
-  updateTimer = () => {
-    if (this.state.timer >= this.props.end) {
-      stop();
-      this.emitEvent(Timer.Completed());
-      return;
+  React.useEffect(() => {
+    if (isRunning) {
+      let timeout = setTimeout(() => setTime(time + 1), 1000);
+      return () => clearTimeout(timeout);
     }
+  }, [time, isRunning]);
 
-    this.setState({ 
-      timer: this.state.timer + 1,
-      running: true,
-    });
-    this.emitEvent(Timer.Updated());
-  }
+  return {
+    begin,
+    end,
+    time,
+    isRunning,
+    resume: () => setIsRunning(true),
+    pause: () => setIsRunning(false),
+  };
+}
 
-  stop = () => {
-    if (!this.state.running)
-      return;
-
-    clearInterval(this.timerId);
-    this.setState({ 
-      timer: this.state.timer,
-      running: false,
-    });
-    this.emitEvent(Timer.Stopped());
-  }
-
-  start = () => {
-    if (this.state.running)
-      return;
-
-    this.timerId = setInterval(this.updateTimer, 1000);
-    this.setState({ 
-      timer: this.state.timer,
-      running: true,
-    });
-    this.emitEvent(Timer.Started());
-  }
-
-  componentDidMount = () => {
-    this.start();
-  }
-
-  componentWillUnmount = () => {
-    this.stop();
-  }
-
-  render = () => {
-    return (
-      <TimerDisplay> 
-        {clockDisplayFromSeconds(this.state.timer)}{"/"}
-        {clockDisplayFromSeconds(this.props.end)}
-        <Button onClick={this.onPauseResume}>
-          {this.state.running ? "/Pause" : "/Resume"}
-        </Button>
-      </TimerDisplay>
-    );
-  }
+const Timer = (props) => {
+  const timer = useTimer(0, props.end);
+  
+  return (
+    <TimerDisplay> 
+      {clockDisplayFromSeconds(timer.time)}{"/"}
+      {clockDisplayFromSeconds(timer.end)}
+      {timer.isRunning ? 
+        (
+          <Button onClick={e => timer.pause()}>
+            /Pause      
+          </Button>
+        ) :
+        (
+          <Button onClick={e => timer.resume()}>
+            /Resume
+          </Button>
+        )
+      }
+    </TimerDisplay>
+  )
 }
 
 export default Timer;

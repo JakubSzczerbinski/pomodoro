@@ -23,8 +23,8 @@ const timeOfActivity = (Activity) => {
 const endOfActivitySound = new Audio('end_of_activity.wav');
 
 const Log = styled.div`
-  border-top: 1em #f8f8f8 solid;
-  margin-top: 0.6em;
+  border-top: 0.06em #f8f8f8 solid;
+  margin-top: 1.5em;
 `;
 
 const Activity = styled.div`
@@ -32,9 +32,6 @@ const Activity = styled.div`
 	background-color: inherit;
   padding: 0.4em 0;
   border-bottom: #f8f8f8 .06em solid;
-  &:hover {
-    border-bottom: #ffa800 .06em solid;
-  }
   &:before {
     color: #ffa800;
     content: "${props => props.activityNumber + "  "}";
