@@ -26,16 +26,26 @@ const Updated = "TimerUpdated";
 const Stopped = "TimerStopped";
 const Started = "TimerStarted";
 
-const useTimer = (begin, end) => {
+const useTimer = (begin, end, eventHandler) => {
   const [time, setTime] = React.useState(begin);
   const [isRunning, setIsRunning] = React.useState(true);
 
   React.useEffect(() => {
     if (isRunning) {
-      let timeout = setTimeout(() => setTime(time + 1), 1000);
-      return () => clearTimeout(timeout);
+      let currentTime = time;
+      let timeout = setInterval(() => {
+        currentTime = currentTime + 1;
+        setTime(currentTime);
+        if (currentTime >= end) {
+          setIsRunning(false);
+          eventHandler(Completed);
+        };
+      }, 1000);
+      return () => { 
+        clearTimeout(timeout);
+      }
     }
-  }, [time, isRunning]);
+  }, [isRunning]);
 
   return {
     begin,
@@ -48,7 +58,13 @@ const useTimer = (begin, end) => {
 }
 
 const Timer = (props) => {
-  const timer = useTimer(0, props.end);
+  const onEvent = ev => {
+    switch (ev) {
+      case Completed:
+        props.onCompleted();
+    }
+  }
+  const timer = useTimer(0, props.end, onEvent);
   
   return (
     <TimerDisplay> 
